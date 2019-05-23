@@ -7,8 +7,19 @@
 //
 
 #import "OSXQRDetect.h"
+#import <Foundation/Foundation.h>
+#import <CoreImage/CIDetector.h>
 #import <CoreImage/CIImage.h>
 #import <CoreImage/CIFeature.h>
+
+
+@interface OSXQRDetect : NSObject
+@property (nonatomic, strong) CIDetector *detector;
+@property (nonatomic) BOOL verbose;
+- (id) init;
+- (void) dealloc;
+@end
+
 
 @implementation OSXQRDetect
 - (id) init {

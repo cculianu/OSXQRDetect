@@ -6,35 +6,34 @@
 //  Copyright © 2019 electroncash.org. MIT License.
 //
 
-#import <Foundation/Foundation.h>
-#import <CoreImage/CIDetector.h>
-#include <stdint.h>
+/*
+ OSX QR Detection. A barebone QR detection library that uses native macOS
+ calls for Electron Cash.
 
-@interface OSXQRDetect : NSObject
-@property (nonatomic, strong) CIDetector *detector;
-@property (nonatomic) BOOL verbose;
-- (id) init;
-- (void) dealloc;
-@end
+ External interface to this library is below. Intented to be called using ctypes.
+*/
 
-
-/* External interface to this library - For now it's barebones simple for our Electron
-Cash QR reader to simply operate. */
-
-// returned value will actually be an OSXQRDetect object
+/* Create a context. Object. returned value will actually be an OSXQRDetect obj-c object */
 extern void *context_create(int verbose);
-// pass the context created in context_create
+/* Deallocate a context. Pass the context object created in context_create */
 extern void context_destroy(void *ctx);
 
 struct DetectionResult {
-    double topLeftX, topLeftY; ///< note these are in pixels, despite being a double
-    double width, height; ///< pixels
-    char str[4096]; ///< detection result is UTF8 encoded, always NUL terminated
+    /// Result detection rectangle.
+    /// Note these are in pixels, despite being a double
+    double topLeftX,
+           topLeftY,
+           width,
+           height;
+    /// Detection result string eg 'bitcoincash:bla'.
+    /// This field is UTF8 encoded, and always has a terminating NUL byte
+    char str[4096];
 };
 
-// img must be 8-bit grayscale. returns 1 on success, 0 on no detection. If 1, detectionResult is valid.
+/// img must be 8-bit grayscale. returns 1 on success, 0 on no detection.
+/// If 1, detectionResult struct is filled-in and will be valid.
 extern int detect_qr(void *context, ///< pointer obtained by calling context_create()
-                     const void *img, ///< pointer to img buffer
-                     int width, int height, ///< x,y size in pixels
+                     const void *img, ///< pointer to img buffer data (8 bit grayscale)
+                     int width, int height, ///< x,y size of img in pixels
                      int rowsize_bytes, ///< row length in bytes (should be >= width)
                      struct DetectionResult *detectionResult);
