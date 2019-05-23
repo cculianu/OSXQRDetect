@@ -67,7 +67,7 @@ int detect_qr(void *context, ///< pointer obtained by calling context_create()
     if (context && img && width > 0 && height > 0 && rowsize_bytes >= width && detectionResult) {
         OSXQRDetect *q = (__bridge OSXQRDetect *)context;
         memset(detectionResult, 0, sizeof(*detectionResult));
-        NSData *imgdata = [NSData dataWithBytes:img length:height*rowsize_bytes];
+        NSData *imgdata = [NSData dataWithBytesNoCopy:(void *)img length:height*rowsize_bytes freeWhenDone:NO];
         CGSize size = CGSizeMake(width, height);
         CIImage *cimg = [CIImage imageWithBitmapData:imgdata
                                          bytesPerRow:rowsize_bytes
