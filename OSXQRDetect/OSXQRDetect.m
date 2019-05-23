@@ -29,6 +29,7 @@
     return self;
 }
 -(void) dealloc {
+    if (self.verbose) NSLog(@"OSXQRDetect dealloc");
     self.detector = nil;
 }
 @end
